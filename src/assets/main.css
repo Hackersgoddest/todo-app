@@ -1,0 +1,9 @@
+* {
+    box-sizing: border-box;
+}
+
+body, #app {
+    margin: 0;
+    border: 0;
+}
+ 
