@@ -1,21 +1,21 @@
 <template>
-    <form class="input-container" @submit.prevent="$emit('addTask',task.toLowerCase())">
-        <div class="textarea">
-            <input type="text" id="task" name="task"  placeholder="Enter a task" v-model.lazy.trim="task">
+    <div class="input-container">
+        <div class="textarea" v-show="isClear">
+            <textarea type="text" id="task" name="task"  placeholder="Enter a task" v-model.lazy.trim="task"> </textarea>
         </div>
         <div class="button">
-            <button>ADD</button>
+            <button @click="() =>$emit('addTask',task.toLowerCase())">ADD</button>
         </div>
         <div v-show="showError" class="error">
         <span v-show="isSpace">Hey, enter a task</span>
         <span v-show="!isSpace">Hey, task already exist</span>
         </div>
-    </form>
+    </div>
    
 </template>
 
 <script setup>
-const props = defineProps(['task', 'showError', 'isSpace'])
+const props = defineProps(['task', 'showError', 'isSpace', 'isClear'])
 </script>
 
 <style scoped>
@@ -38,7 +38,7 @@ const props = defineProps(['task', 'showError', 'isSpace'])
     width: 80%;
 }
 
-input {
+textarea {
     width: 100%;
     height: 100%;
     text-align: center;
@@ -48,7 +48,7 @@ input {
     color: #7a7a7a;
 }
 
-input:focus {
+textarea:focus {
     outline: none;
 }
 
