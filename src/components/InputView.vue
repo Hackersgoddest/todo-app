@@ -1,24 +1,26 @@
 <template>
     <form class="input-container" @submit.prevent="$emit('addTask',task.toLowerCase())">
         <div class="textarea">
-            <input id="task" name="task"  placeholder="Enter a task" v-model.lazy.trim="task">
+            <input type="text" id="task" name="task"  placeholder="Enter a task" v-model.lazy.trim="task">
         </div>
         <div class="button">
             <button>ADD</button>
         </div>
-        
-    </form>
-    <div v-show="showError" class="error">
-        <span>{{ errorMessage }}</span>
+        <div v-show="showError" class="error">
+        <span v-show="isSpace">Hey, enter a task</span>
+        <span v-show="!isSpace">Hey, task already exist</span>
         </div>
+    </form>
+   
 </template>
 
 <script setup>
-const props = defineProps(['task', 'showError', 'errorMessage'])
+const props = defineProps(['task', 'showError', 'isSpace'])
 </script>
 
 <style scoped>
 .input-container {
+    position: relative;
     padding: 0 5px;
     display: flex;
     width: 100%;
@@ -51,11 +53,14 @@ input:focus {
 }
 
 .error {
+    position: absolute;
+    left: 5px;
+    bottom: -40px;
     color: red;
     display: flex;
     justify-content: start;
     /* align-items: center; */
-    padding-left: 5px;
+    /* padding-left: 5px; */
 }
 
 .button {

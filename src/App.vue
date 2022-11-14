@@ -1,10 +1,10 @@
 <template>
   <div class="main-container">
-  <div class="inner-container">
-    <HeaderView />
-    <InputView :task="task" :showError="showError" :errorMessage="errorMessage" @addTask="addTask" />
-    <TaskView :tasks="tasks" :showClass="showClass" @deleteTask="deleteTask" @editTask="editTask" />
-  </div>
+    <div class="inner-container">
+      <HeaderView />
+      <InputView :task="task" :showError="showError" :isSpace="isSpace" @addTask="addTask" />
+      <TaskView :tasks="tasks" :showClass="showClass" @deleteTask="deleteTask" @editTask="editTask" />
+    </div>
   </div>
 </template>
 
@@ -17,28 +17,28 @@ const task = ref('');
 const tasks = ref([]);
 const showError = ref(false);
 const showClass = ref(false);
-const errorMessage = ref('')
+const isSpace = ref(false);
 
 watch(
   () => tasks.value.length,
   (num) => {
-    if(num > 0) showClass.value = true;
+    if (num > 0) showClass.value = true;
     else showClass.value = false;
   },
-  {immediate: true}
-  );
+  { immediate: true }
+);
 
 function addTask(data) {
-  if(tasks.value.indexOf(data) !== -1 || data === '') {
+  if (tasks.value.indexOf(data) !== -1 || data === '') {
     showError.value = true;
-    setTimeout(() => showError.value = false, 4000)
-    if(data === '') errorMessage.value = 'Hey, enter a task';
-    else errorMessage.value = 'Hey, the task already exist';
+    setTimeout(() => showError.value = false, 3000)
+    if (data == '') isSpace.value = true
+    else isSpace.value = false
   }
-  else {
+  else { 
     tasks.value.push(data);
+    // task.value = '';
   }
-  task.value = '';
 }
 
 function deleteTask(data) {
@@ -76,12 +76,12 @@ function editTask(data) {
 }
 
 @media screen and (min-width: 501px) {
-    .inner-container {
-      max-width: 700px;
-    }
-    .header-container {
-      height: 100px;
-    }
+  .inner-container {
+    max-width: 700px;
   }
-  
+
+  .header-container {
+    height: 100px;
+  }
+}
 </style>
