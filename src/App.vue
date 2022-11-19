@@ -13,12 +13,14 @@ import HeaderView from "./components/HeaderView.vue"
 import InputView from "./components/InputView.vue"
 import TaskView from "./components/TaskView.vue"
 import { ref, watch } from "vue";
-const task = ref('');
-const tasks = ref([]);
-const showError = ref(false);
-const showClass = ref(false);
-const isSpace = ref(false);
-const isClear = ref(true);
+let task = ref('');
+let tasks = ref([]);
+let showError = ref(false);
+let showClass = ref(false);
+let isSpace = ref(false);
+let isClear = ref(true);
+let isEdit = ref(false);
+let index = ref(0);
 
 // Checks whether a task has been added or not using the lenght property of the array holding the task.
 watch(
@@ -33,24 +35,34 @@ watch(
 // clears the input fields
 function clearInput() {
   isClear.value = false;
-    setTimeout(() => isClear.value = true, 0)
+  setTimeout(() => isClear.value = true, 0);
+
 }
 
 // add task to the the array variable holding the tasks.
 function addTask(data) {
   if (tasks.value.indexOf(data) !== -1 || data === '') {
     showError.value = true;
-    setTimeout(() => showError.value = false, 3000)
-    if (data == '') isSpace.value = true
+    if (data == '') {
+      isSpace.value = true
+      task.value = '';
+    }
     else {
       task.value = data
+      data = '';
       isSpace.value = false
     }
+    setTimeout(() => showError.value = false, 1000);
   }
-  else { 
-    tasks.value.push(data);
+  else {
+    if (isEdit.value) {
+      tasks.value[index.value] = data;
+    }
+    else tasks.value.push(data);
     clearInput();
     task.value = '';
+    index.value = 0;
+    isEdit.value = false;
   }
 }
 
@@ -62,7 +74,9 @@ function deleteTask(data) {
 // edit task in the array variable holding the task
 function editTask(data) {
   task.value = tasks.value[data];
-  tasks.value = tasks.value.filter((index) => tasks.value.indexOf(index) != data);
+  isEdit.value = true;
+  index.value = data;
+  // tasks.value = tasks.value.filter((index) => tasks.value.indexOf(index) != data);
 }
 
 
@@ -75,7 +89,6 @@ function editTask(data) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Lucida Sans';
   background-color: black;
 }
 
@@ -88,6 +101,8 @@ function editTask(data) {
   background-color: gold;
   border: none;
   border-radius: 10px;
+  /* padding-bottom: 15px; */
+  overflow: hidden;
 }
 
 @media screen and (min-width: 501px) {

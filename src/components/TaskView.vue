@@ -1,5 +1,6 @@
 <template>
-    <ul class="task-container" :class="!showClass ? 'center' : ''">
+    <template class="main-task-container">
+        <ul class="task-container" :class="!showClass ? 'center' : ''">
         <p v-show="!showClass">
             No Task Added Yet
         </p>
@@ -15,6 +16,10 @@
             </li>
         </template>
     </ul>
+    <p class="author">By frank oppong konadu</p>
+    </template>
+   
+
 </template>
 
 <script setup>
@@ -22,13 +27,19 @@ const props = defineProps(['tasks', 'showClass']);
 </script>
 
 <style scoped>
+.main-task-container {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 .task-container {
     display: flex;
     flex-direction: column;
     justify-content: start;
     width: 100%;
-    padding: 0;
-    height: 50%;
+    /* padding: 0; */
+    height: 95%;
     overflow: scroll;
     background-color: white;
 }
@@ -52,11 +63,12 @@ const props = defineProps(['tasks', 'showClass']);
 
 .task-detail {
     font-size: 20px;
+    font-family: "montserrat", sans-serif;
     height: 35px;
     display: flex;
     align-items: flex-start;
     margin-left: 5px;
-    color: rgba(0, 0, 0, 0.7);
+    color: rgb(68 67 67 / 70%);
 }
 
 .btn-container {
@@ -83,6 +95,7 @@ const props = defineProps(['tasks', 'showClass']);
 
 .btn-container :last-child {
     background-color: rgba(255, 0, 0, 0.3);
+    width: 47px;
 }
 
 .btn-container :first-child:hover {
@@ -104,5 +117,16 @@ p {
     justify-content: center;
     font-size: 25px;
     color: #777;
+}
+
+.author {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    height: 25px;
+    color: darkgoldenrod;
 }
 </style>

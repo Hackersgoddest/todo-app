@@ -1,17 +1,17 @@
 <template>
-    <div class="input-container">
-        <div class="textarea" v-show="isClear">
-            <textarea type="text" id="task" name="task"  placeholder="Enter a task" v-model.lazy.trim="task"> </textarea>
+    <form class="input-container" @submit.prevent="$emit('addTask', task.toLowerCase())">
+        <div class="textarea" v-if="isClear">
+            <input type="text" id="task" name="task" placeholder="Enter a task" v-model.trim="task">
         </div>
         <div class="button">
-            <button @click="() =>$emit('addTask',task.toLowerCase())">ADD</button>
+            <button>ADD</button>
         </div>
         <div v-show="showError" class="error">
-        <span v-show="isSpace">Hey, enter a task</span>
-        <span v-show="!isSpace">Hey, task already exist</span>
+            <span v-show="isSpace">Hey, enter a task</span>
+            <span v-show="!isSpace">Hey, task already exist</span>
         </div>
-    </div>
-   
+    </form>
+
 </template>
 
 <script setup>
@@ -30,15 +30,16 @@ const props = defineProps(['task', 'showError', 'isSpace', 'isClear'])
     /* margin-bottom: 30px; */
 }
 
-.input-container > div {
+.input-container>div {
     height: 40%;
 }
+
 .textarea {
     /* flex: 1; */
     width: 80%;
 }
 
-textarea {
+input {
     width: 100%;
     height: 100%;
     text-align: center;
@@ -48,7 +49,7 @@ textarea {
     color: #7a7a7a;
 }
 
-textarea:focus {
+input:focus {
     outline: none;
 }
 
@@ -87,10 +88,8 @@ button:focus {
 }
 
 @media screen and (min-width: 450px) {
-button{
-    width: 50%;
+    button {
+        width: 50%;
+    }
 }
-}
-
-
 </style>
