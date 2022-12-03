@@ -2,80 +2,106 @@
   <div class="main-container">
     <div class="inner-container">
       <HeaderView />
-      <InputView :task="task" :showError="showError" :isSpace="isSpace" :isClear="isClear" @addTask="addTask" />
-      <TaskView :tasks="tasks" :showClass="showClass" @deleteTask="deleteTask" @editTask="editTask" />
+      <InputView :isError="isError" :error-message="errorMessage" :task="newTaskItem" @addTask="addTask" />
+      <TaskView :tasks="tasks" @deleteTask="deleteTask" @editTask="editTask" />
     </div>
   </div>
 </template>
 
 <script setup>
+import axios from "axios"
 import HeaderView from "./components/HeaderView.vue"
 import InputView from "./components/InputView.vue"
 import TaskView from "./components/TaskView.vue"
-import { ref, watch } from "vue";
-let task = ref('');
+import { ref, onMounted } from "vue";
+let newTaskItem = ref({ title: '' });
 let tasks = ref([]);
-let showError = ref(false);
-let showClass = ref(false);
-let isSpace = ref(false);
-let isClear = ref(true);
+const newTaskArray = ref([]);
+let errorMessage = ref('');
+let isError = ref(false);
 let isEdit = ref(false);
-let index = ref(0);
+let currentTaskIndex = ref(0);
 
-// Checks whether a task has been added or not using the lenght property of the array holding the task.
-watch(
-  () => tasks.value.length,
-  (num) => {
-    if (num > 0) showClass.value = true;
-    else showClass.value = false;
-  },
-  { immediate: true }
-);
-
-// clears the input fields
-function clearInput() {
-  isClear.value = false;
-  setTimeout(() => isClear.value = true, 0);
-
+const loadData = async () => {
+  try {
+    let response = await axios.get('https://jsonplaceholder.typicode.com/todos')
+    // tasks.value = response.data.map(element => element.title);
+    tasks.value = response.data;
+  } catch (err) {
+    alert(err.message)
+  }
 }
 
+
+onMounted(() => loadData())
+
 // add task to the the array variable holding the tasks.
-function addTask(data) {
-  if (tasks.value.indexOf(data) !== -1 || data === '') {
-    showError.value = true;
-    if (data == '') {
-      isSpace.value = true
-      task.value = '';
-    }
-    else {
-      task.value = data
-      data = '';
-      isSpace.value = false
-    }
-    setTimeout(() => showError.value = false, 1000);
+function addTask(newTask) {
+  newTaskArray.value = tasks.value.map(task => task.title)
+  if (newTask == '') {
+    isError.value = true;
+    errorMessage.value = "hey, enter a task";
+    return;
+  }
+  else if (newTaskArray.value.indexOf(newTask) != -1) {
+    isError.value = true;
+    errorMessage.value = "hey, task already exist";
+    return;
   }
   else {
     if (isEdit.value) {
-      tasks.value[index.value] = data;
+      axios.put('https://jsonplaceholder.typicode.com/todos/' + (currentTaskIndex.value + 1),
+        {
+          id: currentTaskIndex.value + 1,
+          // id: 1,
+          title: newTask,
+          body: 'bar',
+          // userId: 1,
+          userId: currentTaskIndex.value + 1,
+        }).then(res => {
+          tasks.value.splice((res.data.id - 1), 1, res.data)
+        }).catch(err => alert(err.message))
+      isError.value = false;
+      currentTaskIndex.value = 0;
+
     }
-    else tasks.value.push(data);
-    clearInput();
-    task.value = '';
-    index.value = 0;
-    isEdit.value = false;
+    else {
+      axios.post('https://jsonplaceholder.typicode.com/todos',
+        {
+          title: newTask,
+          body: 'bar',
+          userId: 1,
+        }).then(res => {
+          tasks.value.push(res.data)
+        }).catch(err => alert(err.message))
+      isError.value = false;
+    }
   }
+  newTaskItem.value = { title: '' };
+  isEdit.value = false;
 }
 
 // delete task from the array variable holding the tasks
-function deleteTask(data) {
-  tasks.value = tasks.value.filter((index) => tasks.value.indexOf(index) != data);
+function deleteTask(taskIndex) {
+  axios.delete('https://jsonplaceholder.typicode.com/todos/' + (taskIndex + 1))
+    .then(res => {
+      tasks.value.splice((res.data.id - 1), 1)
+    })
+    .catch(err => alert(err.message))
 }
 
 // edit task in the array variable holding the task
-function editTask(data) {
-  task.value = tasks.value[data];
-  isEdit.value = true;
-  index.value = data;
+const editTask = async (taskIndex) => {
+  try {
+    let response = await axios.get('https://jsonplaceholder.typicode.com/todos/' + (taskIndex + 1))
+    // tasks.value = response.data.map(element => element.title);
+    newTaskItem.value = response.data;
+    isEdit.value = true;
+    currentTaskIndex.value = taskIndex;
+  } catch (err) {
+    alert(err.message)
+  }
+
   // tasks.value = tasks.value.filter((index) => tasks.value.indexOf(index) != data);
 }
 

@@ -1,21 +1,34 @@
 <template>
-    <form class="input-container" @submit.prevent="$emit('addTask', task.toLowerCase())">
-        <div class="textarea" v-if="isClear">
-            <input type="text" id="task" name="task" placeholder="Enter a task" v-model.trim="task">
+    <form
+      @submit.prevent="$emit('addTask', task.title.toLowerCase())"
+      class="input-container"
+    >
+       <div
+         class="textarea"
+       >
+            <input
+              v-model.trim="task.title"
+              id="task"
+              name="task"
+              placeholder="Enter a task"
+              type="text"
+            >
+            <!-- {{task}} -->
         </div>
         <div class="button">
             <button>ADD</button>
         </div>
-        <div v-show="showError" class="error">
-            <span v-show="isSpace">Hey, enter a task</span>
-            <span v-show="!isSpace">Hey, task already exist</span>
+        <div
+          class="error"
+        >
+            <span v-if="isError">{{ errorMessage }}</span>
         </div>
     </form>
 
 </template>
 
 <script setup>
-const props = defineProps(['task', 'showError', 'isSpace', 'isClear'])
+const props = defineProps(['task', 'errorMessage', 'isError'])
 </script>
 
 <style scoped>
