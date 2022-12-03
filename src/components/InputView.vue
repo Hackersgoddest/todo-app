@@ -70,7 +70,7 @@ input:focus {
 .error {
     position: absolute;
     left: 5px;
-    bottom: -40px;
+    bottom: -20%;
     color: red;
     display: flex;
     justify-content: start;
