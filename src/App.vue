@@ -71,7 +71,6 @@ function addTask(newTask) {
         }).then(res => {
           tasks.value.splice((res.data.id - 1), 1, res.data)
         }).catch(err => alert(err.message))
-      isError.value = false;
       currentTaskIndex.value = 0;
 
     }
@@ -84,7 +83,6 @@ function addTask(newTask) {
         }).then(res => {
           tasks.value.push(res.data)
         }).catch(err => alert(err.message))
-      isError.value = false;
     }
   }
   newTaskItem.value = { title: '' };
