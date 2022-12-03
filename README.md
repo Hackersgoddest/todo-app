@@ -1,5 +1,5 @@
 # todo-app
-This is a todo app for recording various task typed by the user and it allow the user to edit previous task added or delete them.
+This todo app fetch todos data from Jsonplaceholder, allowing the user to modify the data by adding, editing or deleting.
 
 ## Project Setup
 
