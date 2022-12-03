@@ -7,8 +7,8 @@
           {{ task.title }}
         </div>
         <div class="btn-container">
-          <button @click="$emit('editTask', index)">edit</button>
-          <button @click="$emit('deleteTask', index)">delete</button>
+          <button @click="$emit('editTask', task.id, index)">edit</button>
+          <button @click="$emit('deleteTask', task.id, index)">delete</button>
         </div>
       </li>
     </ul>

@@ -2,8 +2,18 @@
   <div class="main-container">
     <div class="inner-container">
       <HeaderView />
-      <InputView :isError="isError" :error-message="errorMessage" :task="newTaskItem" @addTask="addTask" />
-      <TaskView :tasks="tasks" @deleteTask="deleteTask" @editTask="editTask" />
+      <InputView
+        :error-message="errorMessage"
+        :isError="isError"
+        :task="newTaskItem"
+        @addTask="addTask"
+        @hideError="() => isError = false"
+      />
+      <TaskView
+        :tasks="tasks"
+        @deleteTask="deleteTask"
+        @editTask="editTask"
+      />
     </div>
   </div>
 </template>
@@ -43,7 +53,7 @@ function addTask(newTask) {
     errorMessage.value = "hey, enter a task";
     return;
   }
-  else if (newTaskArray.value.indexOf(newTask) != -1) {
+  else if (newTaskArray.value.indexOf(newTask) != -1 && newTaskArray.value.indexOf(newTask) != currentTaskIndex.value) {
     isError.value = true;
     errorMessage.value = "hey, task already exist";
     return;
@@ -68,9 +78,9 @@ function addTask(newTask) {
     else {
       axios.post('https://jsonplaceholder.typicode.com/todos',
         {
-          title: newTask,
-          body: 'bar',
           userId: 1,
+          title: newTask,
+          // completed: true,
         }).then(res => {
           tasks.value.push(res.data)
         }).catch(err => alert(err.message))
@@ -82,18 +92,19 @@ function addTask(newTask) {
 }
 
 // delete task from the array variable holding the tasks
-function deleteTask(taskIndex) {
-  axios.delete('https://jsonplaceholder.typicode.com/todos/' + (taskIndex + 1))
+function deleteTask(apiTaskIndex, taskIndex) {
+  axios.delete('https://jsonplaceholder.typicode.com/todos/' + apiTaskIndex)
     .then(res => {
-      tasks.value.splice((res.data.id - 1), 1)
+      tasks.value.splice(taskIndex, 1)
+      console.log(tasks.value)
     })
     .catch(err => alert(err.message))
 }
 
 // edit task in the array variable holding the task
-const editTask = async (taskIndex) => {
+const editTask = async (apiTaskIndex, taskIndex) => {
   try {
-    let response = await axios.get('https://jsonplaceholder.typicode.com/todos/' + (taskIndex + 1))
+    let response = await axios.get('https://jsonplaceholder.typicode.com/todos/' + apiTaskIndex)
     // tasks.value = response.data.map(element => element.title);
     newTaskItem.value = response.data;
     isEdit.value = true;

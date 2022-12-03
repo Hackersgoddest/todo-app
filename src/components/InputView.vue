@@ -6,7 +6,8 @@
        <div
          class="textarea"
        >
-            <input
+            <input 
+            @keydown="$emit('hideError')"
               v-model.trim="task.title"
               id="task"
               name="task"
