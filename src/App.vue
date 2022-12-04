@@ -60,16 +60,13 @@ function addTask(newTask) {
   }
   else {
     if (isEdit.value) {
-      axios.put('https://jsonplaceholder.typicode.com/todos/' + (currentTaskIndex.value + 1),
+      axios.put('https://jsonplaceholder.typicode.com/todos/' + newTaskItem.value.id,
         {
-          id: currentTaskIndex.value + 1,
-          // id: 1,
           title: newTask,
           body: 'bar',
-          // userId: 1,
           userId: currentTaskIndex.value + 1,
         }).then(res => {
-          tasks.value.splice((res.data.id - 1), 1, res.data)
+          tasks.value[currentTaskIndex.value].title = newTask;
         }).catch(err => alert(err.message))
       currentTaskIndex.value = 0;
 
@@ -79,7 +76,6 @@ function addTask(newTask) {
         {
           userId: 1,
           title: newTask,
-          // completed: true,
         }).then(res => {
           tasks.value.push(res.data)
         }).catch(err => alert(err.message))
@@ -94,24 +90,15 @@ function deleteTask(apiTaskIndex, taskIndex) {
   axios.delete('https://jsonplaceholder.typicode.com/todos/' + apiTaskIndex)
     .then(res => {
       tasks.value.splice(taskIndex, 1)
-      console.log(tasks.value)
     })
     .catch(err => alert(err.message))
 }
 
 // edit task in the array variable holding the task
-const editTask = async (apiTaskIndex, taskIndex) => {
-  try {
-    let response = await axios.get('https://jsonplaceholder.typicode.com/todos/' + apiTaskIndex)
-    // tasks.value = response.data.map(element => element.title);
-    newTaskItem.value = response.data;
+const editTask = async (taskIndex) => {
+    newTaskItem.value = {...tasks.value[taskIndex]};
     isEdit.value = true;
     currentTaskIndex.value = taskIndex;
-  } catch (err) {
-    alert(err.message)
-  }
-
-  // tasks.value = tasks.value.filter((index) => tasks.value.indexOf(index) != data);
 }
 
 
